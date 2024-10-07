@@ -138,3 +138,61 @@
       .catch(function (error) {
         console.log(error);
       });
+
+      function drawAnotherLayer(data) {
+      L.geoJson(data, {
+        style: function (feature) {
+          return {
+            color: "#222",
+            // Make line weight larger than the county outline
+            weight: 2,
+            fillOpacity: 0,
+            // This property allows us control interactivity of layer
+            interactive: false,
+          };
+        },
+        // Filter for the correct state to use
+        filter: function (feature) {
+          console.log(feature.properties.NAME);
+          if (feature.properties.NAME == "Texas") {
+            return feature;
+          }
+        },
+      }).addTo(map);
+    }
+
+        // start DrawMap()
+        function drawMap(dataLayer) {
+      var breaks = getClassBreaks(dataLayer);
+      // dataLayer.eachLayer(function (layer) {
+      //   console.log(layer)
+      //   layer.setStyle({
+      //     fillColor: getColor(layer.feature.properties[attributeValue]/layer.feature.properties[normValue], breaks)
+      //   });
+      // });
+
+      dataLayer.eachLayer(function (layer) {
+        console.log(layer.feature.properties);
+      });
+
+      dataLayer.eachLayer(function (layer) {
+        var props = layer.feature.properties;
+
+        layer.setStyle({
+          fillColor: getColor(
+            props[attributeValue] / props[normValue], breaks
+          ),
+        });
+
+        var toolTipInfo = `<h3>${props.NAME} County</h3>
+        ${attributeValue}: ${props[attributeValue]}<br>
+        ${((props[attributeValue] / props[normValue]) * 100).toFixed(1)}%`;
+
+        layer.bindTooltip(toolTipInfo, {
+          sticky: true,
+          className: "leaflet-tooltip-own",
+        });
+      });
+
+      drawLegend(breaks);
+    } // end drawMap()
