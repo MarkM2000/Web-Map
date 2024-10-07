@@ -67,19 +67,30 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+    // Add footer date
+    setDate()
 
-  <script>
+    // Example of dynamically adding content to page
+    function setDate() {
+      var date = new Date();
+      var year = date.getFullYear();
+      var month = date.toLocaleString('default', { month: 'long' });
+      var footerText = document.querySelector("footer p");
+      footerText.innerHTML = `${month}, ${year} | New Maps Plus`;
+    }
+
     // set global variables for header, map container, and footer
-    const header = document.querySelector("header");
-    const mapContainer = document.querySelector("#map");
-    const footer = document.querySelector("footer");
+    var header = document.querySelector("header");
+    var mapContainer = document.querySelector("#map");
+    var footer = document.querySelector("footer");
 
     // set map height to fill window
     mapContainer.style.height =
       window.innerHeight - header.offsetHeight - footer.offsetHeight + "px";
 
     // initial Leaflet map options
-    const options = {
+    var options = {
       zoomSnap: 0.1,
       center: [40, -90],
       zoom: 4,
@@ -87,15 +98,10 @@
     };
 
     // create Leaflet map and apply options
-    const map = L.map("map", options);
+    var map = L.map("map", options);
 
-    // request a basemap tile layer and add to the map
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
-
-    // Make the call to external data
+    // set global variables for map layer,
+    // mapped attribute, and normalizing attribute
     let attributeValue = "STUSPS";
     var normValue = "State";
 
@@ -126,7 +132,7 @@
         //   throw new Error(`HTTP error! status: ${response.status}`);
         // }
         // Return a new fetch call and continue the chain
-        return fetch("csv/LAGS_Porch_10.8_Revised.geojson")
+        return fetch("data/porch-southern-us.geojson")
       })
       .then(function (response) {
         return response.json()
@@ -139,6 +145,16 @@
         console.log(error);
       });
 
+    // Example of keeping your page fresh
+    function setDate() {
+      var date = new Date();
+      var year = date.getFullYear();
+      var month = date.toLocaleString("default", { month: "long" });
+      var footerText = document.querySelector("footer p");
+      footerText.innerHTML = `${month}, ${year} | New Maps Plus`;
+    }
+
+    // start drawAnotherLayer
     function drawAnotherLayer(data) {
       L.geoJson(data, {
         style: function (feature) {
@@ -153,13 +169,15 @@
         },
         // Filter for the correct state to use
         filter: function (feature) {
-          console.log(feature.properties.NAME);
-          if (feature.properties.NAME == "Texas") {
+          console.log(feature.properties.STUSPS);
+          if (feature.properties.STUSPS == "AL") {
             return feature;
           }
         },
       }).addTo(map);
     }
+
+    // end drawAnotherLayer
 
     // start DrawMap()
     function drawMap(dataLayer) {
@@ -222,6 +240,27 @@
     }
     // end getClassBreaks function
 
+    function getColor(d, breaks) {
+      if (d <= breaks[0][1]) {
+        return "#f7fbff";
+      } else if (d <= breaks[1][1]) {
+        return "#c8dcf0";
+      } else if (d <= breaks[2][1]) {
+        return "#73b2d8";
+      } else if (d <= breaks[3][1]) {
+        return "#2979b9";
+      } else if (d <= breaks[4][1]) {
+        return "#08306b";
+      }
+
+      // layer.setStyle({
+      //   fillColor: getColor(
+      //     props[attributeValue] / props[normValue], breaks
+      //   ),
+      // });
+    }
+    // end getColor
+
     // start drawLegend (breaks)
     function drawLegend(breaks) {
       // create a new Leaflet control object, and position it top left
@@ -260,4 +299,6 @@
       legend.addTo(map);
     }
 
-    map.addControl(L.control.zoom({ position: "topright" }));
+    map.addControl(L.control.zoom({ position: "topright" }));  
+</script>
+
