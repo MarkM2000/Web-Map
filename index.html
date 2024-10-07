@@ -97,12 +97,27 @@
 
     // Make the call to external data
     fetch("data/southern-us.geojson")
-  .then(function(response) {
-      return response.json();
-  })
-  .then(function() {
-      L.geoJson().addTo(map);
-  })
-  .catch(function(error) {
-      console.log(`Ruh roh! An error has occurred`, error);
-  });
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function () {
+        const dataLayer = L.geoJson(data, {
+          style: function (feature) {
+            return {
+              color: "#dddddd",
+              weight: 1,
+              fillOpacity: 1,
+              fillColor: "#1f78b4",
+            };
+          },
+        }).addTo(map);
+        // call to new function here gets the data out of the
+        // callback function
+        drawMap(dataLayer);
+      });
+
+    function drawMap(dataLayer) {
+      dataLayer.eachLayer(function (layer) {
+        console.log(layer);
+      });
+    } // end drawMap()
