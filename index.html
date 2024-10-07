@@ -96,28 +96,45 @@
     }).addTo(map);
 
     // Make the call to external data
-    fetch("data/southern-us.geojson")
+    let attributeValue = "STUSPS";
+    var normValue = "State";
+
+        // Make the call to external data
+        fetch("data/southern-us.geojson")
       .then(function (response) {
         return response.json();
       })
-      .then(function () {
-        const dataLayer = L.geoJson(data, {
+      .then(function (data) {
+        // This is the JSON from our response
+        // Draw basic map from data
+        var dataLayer = L.geoJson(data, {
           style: function (feature) {
             return {
-              color: "#dddddd",
+              color: "#333",
               weight: 1,
               fillOpacity: 1,
               fillColor: "#1f78b4",
             };
           },
         }).addTo(map);
-        // call to new function here gets the data out of the
-        // callback function
+        // Make call to update map
+        console.log(dataLayer)
         drawMap(dataLayer);
+        // if (response.ok) {
+        //   return response.json();
+        // } else {
+        //   throw new Error(`HTTP error! status: ${response.status}`);
+        // }
+        // Return a new fetch call and continue the chain
+        return fetch("csv/LAGS_Porch_10.8_Revised.geojson")
+      })
+      .then(function (response) {
+        return response.json()
+      })
+      .then(function (data) {
+        drawAnotherLayer(data)
+      })
+      // If there is an error, log it to the console
+      .catch(function (error) {
+        console.log(error);
       });
-
-    function drawMap(dataLayer) {
-      dataLayer.eachLayer(function (layer) {
-        console.log(layer);
-      });
-    } // end drawMap()
