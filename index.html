@@ -221,3 +221,43 @@
       return breaks; // return Array of class breaks
     }
     // end getClassBreaks function
+
+    // start drawLegend (breaks)
+    function drawLegend(breaks) {
+      // create a new Leaflet control object, and position it top left
+      var legend = L.control({ position: 'topleft' });
+
+      // when the legend is added to the map
+      legend.onAdd = function () {
+        // create a new HTML <div> element and give it a class list
+        var div = L.DomUtil.create('div', 'legend d-flex flex-column px-3 py-2');
+
+        // first append an <h3> tag to the div holding the current attribute
+        // and norm values (i.e., the mapped phenomena)
+        div.innerHTML = `<h3>${attributeValue} per  ${normValue}</h3>`;
+
+        // for each of our breaks
+        for (var i = 0; i < breaks.length; i++) {
+          // determine the color associated with each break value,
+          // including the lower range value
+          var color = getColor(breaks[i][0], breaks);
+
+          // concatenate a <span> tag styled with the color and the range values
+          // of that class and include a label with the low and a high ends of that class range
+          div.innerHTML +=
+            `<div class="d-flex flex-row justify-content-start">
+                <span style="background:${color}"></span>
+                <label>${(breaks[i][0] * 100).toFixed(1)} &mdash; 
+                ${(breaks[i][1] * 100).toFixed(1)}%</label>
+            </div>`;
+        }
+
+        // return the populated div to be added to the map
+        return div;
+      };
+
+      // add the legend to the map
+      legend.addTo(map);
+    }
+
+    map.addControl(L.control.zoom({ position: "topright" }));
