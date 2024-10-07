@@ -99,8 +99,8 @@
     let attributeValue = "STUSPS";
     var normValue = "State";
 
-        // Make the call to external data
-        fetch("data/southern-us.geojson")
+    // Make the call to external data
+    fetch("data/southern-us.geojson")
       .then(function (response) {
         return response.json();
       })
@@ -139,7 +139,7 @@
         console.log(error);
       });
 
-      function drawAnotherLayer(data) {
+    function drawAnotherLayer(data) {
       L.geoJson(data, {
         style: function (feature) {
           return {
@@ -161,8 +161,8 @@
       }).addTo(map);
     }
 
-        // start DrawMap()
-        function drawMap(dataLayer) {
+    // start DrawMap()
+    function drawMap(dataLayer) {
       var breaks = getClassBreaks(dataLayer);
       // dataLayer.eachLayer(function (layer) {
       //   console.log(layer)
@@ -196,3 +196,28 @@
 
       drawLegend(breaks);
     } // end drawMap()
+
+    // start GetClassBreaks(dataLayer) function
+    function getClassBreaks(dataLayer) {
+      // create empty Array for storing values
+      const values = [];
+
+      // loop through all the counties
+      dataLayer.eachLayer(function (layer) {
+        var props = layer.feature.properties;
+        var value = props[attributeValue] / props[normValue];
+        values.push(value);
+      });
+
+
+      // determine similar clusters
+      var clusters = ss.ckmeans(values, 5);
+
+      // create an array of the lowest value within each cluster
+      var breaks = clusters.map(function (cluster) {
+        return [cluster[0], cluster.pop()];
+      });
+
+      return breaks; // return Array of class breaks
+    }
+    // end getClassBreaks function
