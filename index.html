@@ -96,15 +96,13 @@
     }).addTo(map);
 
     // Make the call to external data
-    fetch("data/porch-southern-us.geojson")
-      // When the server responds, let's evaluate the response
-      .then(function (response) {
-        // Look at the server's response for the resource
-        console.log(response);
-        // If API call was successful...
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-      });
+    fetch("data/southern-us.geojson")
+  .then(function(response) {
+      return response.json();
+  })
+  .then(function(counties) {
+      L.geoJson(counties).addTo(map);
+  })
+  .catch(function(error) {
+      console.log(`Ruh roh! An error has occurred`, error);
+  });
