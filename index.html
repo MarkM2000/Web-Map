@@ -100,7 +100,7 @@
       .then(function (response) {
         return response.json();
       })
-      .then(function (STUSPS) {
+      .then(function () {
         const dataLayer = L.geoJson(data, {
           style: function (feature) {
             return {
