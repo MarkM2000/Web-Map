@@ -103,14 +103,8 @@
         console.log(response);
         // If API call was successful...
         if (response.ok) {
-          // ...parse the JSON data.
           return response.json();
         } else {
-          // Present the numeric status code if it fails.
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-      })
-      .then(function (data) {
-        // Log the data to the console
-        console.log(data);
       });
