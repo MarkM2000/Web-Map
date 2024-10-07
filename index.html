@@ -94,3 +94,23 @@
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
+
+    // Make the call to external data
+    fetch("data/porch-southern-us.geojson")
+      // When the server responds, let's evaluate the response
+      .then(function (response) {
+        // Look at the server's response for the resource
+        console.log(response);
+        // If API call was successful...
+        if (response.ok) {
+          // ...parse the JSON data.
+          return response.json();
+        } else {
+          // Present the numeric status code if it fails.
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      })
+      .then(function (data) {
+        // Log the data to the console
+        console.log(data);
+      });
