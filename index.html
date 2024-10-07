@@ -100,8 +100,8 @@
   .then(function(response) {
       return response.json();
   })
-  .then(function(counties) {
-      L.geoJson(counties).addTo(map);
+  .then(function() {
+      L.geoJson().addTo(map);
   })
   .catch(function(error) {
       console.log(`Ruh roh! An error has occurred`, error);
